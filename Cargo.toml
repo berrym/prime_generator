@@ -1,0 +1,15 @@
+[package]
+name = "prime_generator"
+version = "0.1.0"
+authors = ["Michael Berry <trismegustis@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "primes"
+path = "src/lib.rs"
+
+[[bin]]
+name = "primes-interactive"
+path = "src/primes-interactive.rs"
+
+[dependencies]
