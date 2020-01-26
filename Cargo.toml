@@ -1,6 +1,6 @@
 [package]
 name = "prime_generator"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Michael Berry <trismegustis@gmail.com>"]
 edition = "2018"
 
@@ -9,7 +9,8 @@ name = "primes"
 path = "src/lib.rs"
 
 [[bin]]
-name = "primes-interactive"
-path = "src/primes-interactive.rs"
+name = "prime-generator"
+path = "src/prime-generator.rs"
 
 [dependencies]
+clap = "2.33.0"

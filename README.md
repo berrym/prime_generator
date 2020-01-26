@@ -18,11 +18,11 @@ Clone the git repository from https://github.com/berrym/prime_generator.git
 
 Use Rust's own tooling to compile and run the program, e.g.
 
-* cargo run
+* cargo run -- -p 23
 
 ## Help
 
-    * The utility is interactive.
+* cargo run -- --help
 
 ## Authors
 
@@ -30,12 +30,14 @@ Copyright 2020
 Michael Berry <trismegustis@gmail.com>
 
 ## Version History
+* 0.1.1
+    * Use clap to parse command line
 * 0.1.0
     * Initial Release
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file  for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
