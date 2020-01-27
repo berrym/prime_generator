@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     // Parse command line
     let matches = clap_app!(prime_generator =>
         (version: "0.1.1")
-        (author: "Michael Berry <trismegustisgmail.com>")
+        (author: "Michael Berry <trismegustis@gmail.com>")
         (about: "Generate prime numbers")
         (@arg N: -p --primes +takes_value "Generate primes up to N")
         (@arg INTERACTIVE: -i --interactive "Interacive program")
