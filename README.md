@@ -30,6 +30,8 @@ Copyright 2020
 Michael Berry <trismegustis@gmail.com>
 
 ## Version History
+* 0.1.2
+    * Added an option to calculate the nth prime.
 * 0.1.1
     * Use clap to parse command line
 * 0.1.0

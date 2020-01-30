@@ -1,74 +1,97 @@
-use std::{error, io, io::Write};
+use std::{error, io, io::Write, process};
 
 use primes::eratosthenes;
 
-#[macro_use]
-extern crate clap;
+use clap::{App, Arg};
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     // Parse command line
-    let matches = clap_app!(prime_generator =>
-        (version: "0.1.1")
-        (author: "Michael Berry <trismegustis@gmail.com>")
-        (about: "Generate prime numbers")
-        (@arg N: -p --primes +takes_value "Generate primes up to N")
-        (@arg INTERACTIVE: -i --interactive "Interacive program")
-    )
-    .get_matches();
+    let cli = App::new("Prime Generator")
+        .version("0.1.2")
+        .author("Michael Berry <trismegustis@gmail.com>")
+        .about("Generate prime numbers")
+        .arg(
+            Arg::with_name("primes")
+                .short("p")
+                .long("primes-to")
+                .help("Generate primes up to N")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("nth_prime")
+                .short("n")
+                .long("nth-prime")
+                .help("Generate primes up to N")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("interactive")
+                .short("i")
+                .long("interactive")
+                .help("Interactive program"),
+        )
+        .get_matches();
 
-    // Run a one time command
-    if let Some(n) = matches.value_of("N") {
-        match n.parse() {
-            Ok(n) => println!(
-                "List of prime numbers up to {}\n{:#?}",
-                n,
-                eratosthenes::sieve(n)
-            ),
-            Err(e) => println!("Error: {}", e),
-        }
-        return Ok(());
-    };
-
-    // Run the interactive loop
-    if matches.is_present("INTERACTIVE") {
+    if cli.is_present("primes") {
+        if let Some(n) = cli.value_of("primes") {
+            match n.parse() {
+                Ok(n) => println!(
+                    "List of prime numbers up to {}\n{:#?}",
+                    n,
+                    eratosthenes::sieve_to_n(n)
+                ),
+                Err(e) => println!("Error: {}", e),
+            }
+            return Ok(());
+        };
+    } else if cli.is_present("nth_prime") {
+        if let Some(n) = cli.value_of("nth_prime") {
+            match n.parse() {
+                Ok(n) => println!("Prime number {} is {}", n, eratosthenes::sieve_nth(n)),
+                Err(e) => println!("Error: {}", e),
+            }
+            return Ok(());
+        };
+    } else if cli.is_present("interactive") {
         interactive()?;
+    } else {
+        println!("{}\n\nTry passing --help for more information", cli.usage());
     }
     Ok(())
 }
 
+// Interactive program
 fn interactive() -> Result<(), Box<dyn error::Error>> {
     println!("Prime Number Generator\n");
     println!("Calculate prime numbers up to N");
     println!("Type \"quit\" to end the program");
 
-    loop {
-        let mut n = String::new();
+    let mut n = String::new();
 
-        // Print directly to stdout without a newline, flush stdout
-        print!("\nEnter a positive integer: ");
-        io::stdout().flush().unwrap();
+    // Print directly to stdout without a newline, flush stdout
+    print!("\nEnter a positive integer: ");
+    io::stdout().flush().unwrap();
 
-        // Read a line of user input
-        io::stdin().read_line(&mut n).expect("Failed to read line");
+    // Read a line of user input
+    io::stdin().read_line(&mut n).expect("Failed to read line");
 
-        // If user input is quit, then break program loop
-        if n.trim() == "quit" {
-            break;
-        }
-
-        // Parse input into a number
-        let n: usize = match n.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-
-        // Generate the first n prime numbers
-        let primes = eratosthenes::sieve(n);
-        for p in &primes {
-            print!("{} ", p);
-            io::stdout().flush().unwrap()
-        }
-        println!();
+    // If user input is quit, then break program loop
+    if n.trim() == "quit" {
+        process::exit(0);
     }
+
+    // Parse input into a number
+    let n: usize = match n.trim().parse() {
+        Ok(num) => num,
+        Err(_) => process::exit(1),
+    };
+
+    // Generate the first n prime numbers
+    let primes = eratosthenes::sieve_to_n(n);
+    for p in &primes {
+        print!("{} ", p);
+        io::stdout().flush().unwrap()
+    }
+    println!();
     Ok(())
 }
