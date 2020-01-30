@@ -51,7 +51,10 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     } else if cli.is_present("nth_prime") {
         if let Some(n) = cli.value_of("nth_prime") {
             match n.parse() {
-                Ok(n) => println!("Prime number {} is {}", n, eratosthenes::sieve_nth(n)),
+                Ok(n) => match eratosthenes::sieve_nth(n) {
+                    Some(p) => println!("Prime number {} is {:?}", n, p),
+                    None => println!("Error: unknown"),
+                },
                 Err(e) => println!("Error: {}", e),
             }
             return Ok(());

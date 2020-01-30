@@ -75,21 +75,34 @@ pub mod eratosthenes {
     }
 
     /// Calculate the nth prime using the Sieve of Eratosthenes
-    pub fn sieve_nth(nth: usize) -> u128 {
-        // Create a mutable boolean vector to represent the sieve
-        let mut sieve = vec![true; nth * nth];
+    pub fn sieve_nth(n: u32) -> Option<u32> {
+        if n == 0 {
+            return None;
+        }
 
-        // Mark all non prime numbers as false
-        mark_false_if_not_prime((nth * nth) - (nth * 2), &mut sieve).unwrap();
+        let mut primes: Vec<u32> = vec![2];
+        let mut counter = 3;
 
-        // Enumerate and filter_map primes for true values and return them
-        let primes: Vec<usize> = sieve
-            .iter()
-            .enumerate()
-            .filter_map(|(n, &is_prime)| if is_prime { Some(n) } else { None })
-            .collect();
+        while (primes.len() as u32) < n {
+            if primes
+                .iter()
+                .filter(|&x| counter % x == 0)
+                .collect::<Vec<_>>()
+                .is_empty()
+            {
+                write_colors::write_green(format!("{}", counter).as_str());
+                write_colors::write_white(format!(" is prime\n").as_str());
+                primes.push(counter);
+            }
+            write_colors::write_red(format!("{}", counter + 1).as_str());
+            write_colors::write_white(format!(" is not prime\n").as_str());
+            counter += 2
+        }
 
-        // Return the nth prime
-        primes[nth] as u128
+        if let Some(n) = primes.last() {
+            Some(*n)
+        } else {
+            None
+        }
     }
 }
