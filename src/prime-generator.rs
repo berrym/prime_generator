@@ -1,4 +1,8 @@
-use std::{error, io, io::Write, process};
+use std::{
+    error,
+    io::{self, Write},
+    process,
+};
 
 use primes::eratosthenes;
 

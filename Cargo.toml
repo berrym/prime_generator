@@ -14,3 +14,4 @@ path = "src/prime-generator.rs"
 
 [dependencies]
 clap = "2.33.0"
+termcolor = "1.1"

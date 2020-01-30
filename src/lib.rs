@@ -1,6 +1,32 @@
+pub mod write_colors {
+    use std::io::{self, Write};
+    use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
+
+    pub fn write_green(text: &str) -> io::Result<()> {
+        let mut stdout = StandardStream::stdout(ColorChoice::Always);
+        stdout.set_color(ColorSpec::new().set_fg(Some(Color::Green)))?;
+        writeln!(&mut stdout, "{}", text)
+    }
+
+    pub fn write_red(text: &str) -> io::Result<()> {
+        let mut stdout = StandardStream::stdout(ColorChoice::Always);
+        stdout.set_color(ColorSpec::new().set_fg(Some(Color::Red)))?;
+        writeln!(&mut stdout, "{}", text)
+    }
+
+    pub fn write_white(text: &str) -> io::Result<()> {
+        let mut stdout = StandardStream::stdout(ColorChoice::Always);
+        stdout.set_color(ColorSpec::new().set_fg(Some(Color::White)))?;
+        writeln!(&mut stdout, "{}", text)
+    }
+}
+
 pub mod eratosthenes {
+    use super::write_colors;
+    use std::io;
+
     /// Mark all non prime indices as false in a boolean vevtor.
-    fn mark_false_if_not_prime(limit: usize, sieve: &mut Vec<bool>) {
+    fn mark_false_if_not_prime(limit: usize, sieve: &mut Vec<bool>) -> io::Result<()> {
         sieve[0] = false;
 
         if limit >= 1 {
@@ -8,21 +34,23 @@ pub mod eratosthenes {
         }
 
         // Perform a trial division
+        write_colors::write_white("")?;
         println!("Sieve of Eratosthenes");
         println!("performing a trial division...\n");
 
         for n in 2..=limit {
             if sieve[n] {
                 let mut x = n * n;
-                println!("the square root of {} is {} which is not prime", n, x);
+                write_colors::write_green(format!("{} is prime", n).as_str())?;
                 while x <= limit {
-                    println!("{} + {} is not prime", x, n);
+                    write_colors::write_red(format!("{} + {} = {}", n, x, n + x).as_str())?;
                     sieve[x] = false;
                     x += n;
                 }
-                println!();
+                write_colors::write_white("")?;
             }
         }
+        Ok(())
     }
 
     /// Calculate primes up to limit using the Sieve of Eratosthenes.
@@ -31,7 +59,7 @@ pub mod eratosthenes {
         let mut primes = vec![true; limit + 1];
 
         // Mark all non prime numbers as false
-        mark_false_if_not_prime(limit, &mut primes);
+        mark_false_if_not_prime(limit, &mut primes).unwrap();
 
         // Enumerate and filter_map primes for true values and return them
         primes
@@ -47,7 +75,7 @@ pub mod eratosthenes {
         let mut sieve = vec![true; nth * nth];
 
         // Mark all non prime numbers as false
-        mark_false_if_not_prime(nth + 1, &mut sieve);
+        mark_false_if_not_prime(nth + 1, &mut sieve).unwrap();
 
         // Enumerate and filter_map primes for true values and return them
         let primes: Vec<usize> = sieve
