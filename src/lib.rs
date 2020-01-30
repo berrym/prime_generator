@@ -5,19 +5,19 @@ pub mod write_colors {
     pub fn write_green(text: &str) -> io::Result<()> {
         let mut stdout = StandardStream::stdout(ColorChoice::Always);
         stdout.set_color(ColorSpec::new().set_fg(Some(Color::Green)))?;
-        writeln!(&mut stdout, "{}", text)
+        write!(&mut stdout, "{}", text)
     }
 
     pub fn write_red(text: &str) -> io::Result<()> {
         let mut stdout = StandardStream::stdout(ColorChoice::Always);
         stdout.set_color(ColorSpec::new().set_fg(Some(Color::Red)))?;
-        writeln!(&mut stdout, "{}", text)
+        write!(&mut stdout, "{}", text)
     }
 
     pub fn write_white(text: &str) -> io::Result<()> {
         let mut stdout = StandardStream::stdout(ColorChoice::Always);
         stdout.set_color(ColorSpec::new().set_fg(Some(Color::White)))?;
-        writeln!(&mut stdout, "{}", text)
+        write!(&mut stdout, "{}", text)
     }
 }
 
@@ -41,13 +41,18 @@ pub mod eratosthenes {
         for n in 2..=limit {
             if sieve[n] {
                 let mut x = n * n;
-                write_colors::write_green(format!("{} is prime", n).as_str())?;
+                write_colors::write_green(format!("{}", n).as_str())?;
+                write_colors::write_white(format!(" is prime\n").as_str())?;
                 while x <= limit {
-                    write_colors::write_red(format!("{} + {} = {}", n, x, n + x).as_str())?;
+                    write_colors::write_green(format!("{} ", n).as_str())?;
+                    write_colors::write_white(format!("+ ").as_str())?;
+                    write_colors::write_red(format!("{} ", x).as_str())?;
+                    write_colors::write_white(format!("= ").as_str())?;
+                    write_colors::write_red(format!("{}\n", n + x).as_str())?;
                     sieve[x] = false;
                     x += n;
                 }
-                write_colors::write_white("")?;
+                write_colors::write_white("\n")?;
             }
         }
         Ok(())
@@ -75,7 +80,7 @@ pub mod eratosthenes {
         let mut sieve = vec![true; nth * nth];
 
         // Mark all non prime numbers as false
-        mark_false_if_not_prime(nth + 1, &mut sieve).unwrap();
+        mark_false_if_not_prime((nth * nth) - (nth * 2), &mut sieve).unwrap();
 
         // Enumerate and filter_map primes for true values and return them
         let primes: Vec<usize> = sieve
